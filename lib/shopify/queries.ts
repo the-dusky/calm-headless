@@ -1,9 +1,10 @@
 /**
  * GraphQL queries and fragments for the Shopify Storefront API
  */
+import { gql } from 'graphql-tag';
 
 // Product fragment with common fields
-export const PRODUCT_FRAGMENT = `
+export const PRODUCT_FRAGMENT = gql`
   fragment ProductFragment on Product {
     id
     title
@@ -57,7 +58,7 @@ export const PRODUCT_FRAGMENT = `
 `;
 
 // Query to get a single product by handle
-export const GET_PRODUCT_BY_HANDLE = `
+export const GET_PRODUCT_BY_HANDLE = gql`
   query GetProductByHandle($handle: String!) {
     product(handle: $handle) {
       ...ProductFragment
@@ -67,7 +68,7 @@ export const GET_PRODUCT_BY_HANDLE = `
 `;
 
 // Query to get multiple products
-export const GET_PRODUCTS = `
+export const GET_PRODUCTS = gql`
   query GetProducts($first: Int!, $after: String) {
     products(first: $first, after: $after) {
       pageInfo {
@@ -85,7 +86,7 @@ export const GET_PRODUCTS = `
 `;
 
 // Query to get products by collection
-export const GET_COLLECTION_PRODUCTS = `
+export const GET_COLLECTION_PRODUCTS = gql`
   query GetCollectionProducts($handle: String!, $first: Int!, $after: String) {
     collection(handle: $handle) {
       id
@@ -108,7 +109,7 @@ export const GET_COLLECTION_PRODUCTS = `
 `;
 
 // Query to get all collections
-export const GET_COLLECTIONS = `
+export const GET_COLLECTIONS = gql`
   query GetCollections($first: Int!) {
     collections(first: $first) {
       edges {
@@ -131,7 +132,7 @@ export const GET_COLLECTIONS = `
 `;
 
 // Cart-related queries and mutations
-export const CREATE_CART = `
+export const CREATE_CART = gql`
   mutation CreateCart($lines: [CartLineInput!]) {
     cartCreate(input: { lines: $lines }) {
       cart {
@@ -186,7 +187,7 @@ export const CREATE_CART = `
   }
 `;
 
-export const ADD_TO_CART = `
+export const ADD_TO_CART = gql`
   mutation AddToCart($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
@@ -240,7 +241,7 @@ export const ADD_TO_CART = `
   }
 `;
 
-export const UPDATE_CART = `
+export const UPDATE_CART = gql`
   mutation UpdateCart($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart {
@@ -282,7 +283,7 @@ export const UPDATE_CART = `
   }
 `;
 
-export const REMOVE_FROM_CART = `
+export const REMOVE_FROM_CART = gql`
   mutation RemoveFromCart($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart {
@@ -324,7 +325,7 @@ export const REMOVE_FROM_CART = `
   }
 `;
 
-export const GET_CART = `
+export const GET_CART = gql`
   query GetCart($cartId: ID!) {
     cart(id: $cartId) {
       id

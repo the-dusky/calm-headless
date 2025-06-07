@@ -27,7 +27,7 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
   - Created `/lib/shopify/queries.ts` with GraphQL queries for products, collections, cart
   - Created `/lib/shopify/hooks.ts` with React hooks for data fetching
   - Created `/lib/shopify/index.ts` to export all utilities
-- [ ] Set up GraphQL code generation for type safety (optional - we've created manual types for now)
+- [x] Set up GraphQL code generation for type safety
 
 ### 2. Product Management
 - [ ] Implement product listing components
