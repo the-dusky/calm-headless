@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { shopifyFetch } from "@/lib/shopify/client";
 import { GET_PRODUCTS_BY_SEARCH } from "@/lib/shopify/queries";
@@ -30,7 +30,7 @@ type SearchProduct = {
   availableForSale: boolean;
 };
 
-export default function SearchPage() {
+function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -55,7 +55,7 @@ export default function SearchPage() {
     setError(null);
     
     try {
-      const response = await shopifyFetch({
+      const response = await shopifyFetch<{ products: { edges: Array<{ node: SearchProduct }> } }>({ 
         query: GET_PRODUCTS_BY_SEARCH as unknown as string,
         variables: {
           query: searchQuery,
@@ -63,8 +63,8 @@ export default function SearchPage() {
         }
       });
       
-      // Using any type here to handle the GraphQL response structure
-      const data = response.body?.data as any;
+      // Type the response properly
+      const data = response.body;
       
       if (data && data.products && data.products.edges) {
         setProducts(data.products.edges.map((edge: { node: SearchProduct }) => edge.node));
@@ -188,5 +188,13 @@ export default function SearchPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto py-12 px-4">Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }

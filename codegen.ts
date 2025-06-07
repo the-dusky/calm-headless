@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 // Load environment variables from .env.local file
 dotenv.config({ path: '.env.local' });
 
+// Check for required environment variables
 const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
 const accessToken = process.env.SHOPIFY_STOREFRONT_PUBLIC_ACCESS_TOKEN;
 
@@ -24,11 +25,11 @@ const config: CodegenConfig = {
   },
   documents: ['lib/shopify/queries.ts'],
   generates: {
-    './lib/shopify/generated/': {
-      preset: 'client',
+    './lib/shopify/generated/graphql.ts': {
       plugins: [
         'typescript',
         'typescript-operations',
+        'typescript-graphql-request',
       ],
       config: {
         avoidOptionals: true,
@@ -36,6 +37,17 @@ const config: CodegenConfig = {
         withHooks: true,
         withHOC: false,
         withComponent: false,
+        dedupeFragments: true,
+      },
+    },
+    './lib/shopify/generated/': {
+      preset: 'client',
+      presetConfig: {
+        gqlTagName: 'gql',
+        fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
+      },
+      config: {
+        dedupeFragments: true,
       },
     },
   },

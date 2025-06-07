@@ -11,7 +11,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
   const { handle } = params;
   const router = useRouter();
   const { product, loading, error } = useProduct(handle);
-  const { addToCart, createCart } = useCart();
+  const { addItem } = useCart();
   
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -34,14 +34,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
     setAddToCartError(null);
     
     try {
-      await addToCart({
-        lines: [
-          {
-            merchandiseId: selectedVariantId,
-            quantity
-          }
-        ]
-      });
+      await addItem(selectedVariantId, quantity);
       
       // Navigate to cart page or show success message
       router.push("/cart");
@@ -90,10 +83,16 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
   const variants = product.variants.edges.map(({ node }) => node);
   const hasMultipleVariants = variants.length > 1;
   
-  // Get unique option names and values
-  const optionNames = product.options.map(option => option.name);
+  // Get unique option names and values from variants
+  const optionNamesSet = new Set<string>();
+  variants.forEach(variant => {
+    variant.selectedOptions.forEach(opt => {
+      optionNamesSet.add(opt.name);
+    });
+  });
+  const optionNames = Array.from(optionNamesSet);
   
-  const variantOptions = optionNames.map(name => {
+  const variantOptions = optionNames.map((name: string) => {
     const values = new Set<string>();
     variants.forEach(variant => {
       const option = variant.selectedOptions.find(opt => opt.name === name);
@@ -173,13 +172,13 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
           {/* Variant Selection */}
           {hasMultipleVariants && (
             <div className="mb-6">
-              {variantOptions.map((option) => (
+              {variantOptions.map((option: { name: string; values: string[] }) => (
                 <div key={option.name} className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {option.name}
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {option.values.map((value) => {
+                    {option.values.map((value: string) => {
                       // Find a variant that matches the current selection plus this option value
                       const matchingVariant = variants.find(variant => {
                         const currentOption = variant.selectedOptions.find(opt => opt.name === option.name);
@@ -274,8 +273,8 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
           <div className="mt-8 border-t border-gray-200 pt-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">SKU:</span>{' '}
-                {selectedVariant?.sku || 'N/A'}
+                <span className="font-medium">Variant ID:</span>{' '}
+                {selectedVariant?.id ? selectedVariant.id.split('/').pop() : 'N/A'}
               </div>
               <div>
                 <span className="font-medium">Availability:</span>{' '}
