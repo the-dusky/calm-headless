@@ -136,6 +136,75 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [ ] Deploy to production environment
 - [ ] Monitor performance and errors
 
+## Review - June 7, 2025 (Part 5)
+
+### Completed Tasks
+- Fixed product page error by converting it to use server-side data fetching
+- Created a client-side `ProductDetail` component for handling product UI and cart interactions
+- Added API route for single product fetching at `/api/products/[handle]`
+- Added SEO metadata generation for product pages
+- Improved error handling for product not found scenarios
+
+### Key Architectural Changes
+- Converted product page to a server component that fetches data server-side
+- Created a clear separation between server-side data fetching and client-side UI
+- Added proper error handling for product not found cases
+- Implemented SEO metadata generation based on product data
+- Maintained the same UI/UX while fixing the core data fetching issue
+
+### Next Steps
+- [ ] Create a dedicated cart page at "/cart" to handle the redirect from product pages
+- [ ] Continue implementing cart functionality with the Storefront API
+- [ ] Test the product page and cart functionality end-to-end
+- [ ] Add unit tests for the server-side data fetching functions
+
+## Review - June 7, 2025 (Part 4)
+
+### Completed Tasks
+- Fixed the empty product grid issue by moving Shopify API calls to server components
+- Created server-side data fetching functions in `lib/shopify/server-actions.ts`
+- Implemented a client-side `ProductGrid` component that receives server-fetched data
+- Created an API route for client-side pagination at `/api/products`
+- Maintained the same UI/UX while fixing the core data fetching issue
+- Fixed TypeScript errors related to imports and component structure
+
+### Key Architectural Changes
+- Moved Shopify Storefront API calls from client components to server components
+- Created a clear separation between data fetching (server) and UI rendering (client)
+- Implemented a hybrid approach with server-side initial data load and client-side pagination
+- Fixed environment variable access by ensuring all API calls happen server-side
+- Improved error handling with better logging and user feedback
+
+### Next Steps
+- [x] Fix product page error by converting it to use server-side data fetching
+- [ ] Create a dedicated cart page at "/cart" to handle the redirect from product pages
+- [ ] Continue implementing cart functionality with the Storefront API
+- [ ] Add unit tests for the server-side data fetching functions
+- [ ] Implement sorting and filtering options for the product grid
+
+## Review - June 7, 2025 (Part 3)
+
+### Completed Tasks
+- Implemented a product grid on the home page to display all products
+- Replaced the calendar-based home page with a product catalog view
+- Reused the existing ProductCard component for consistent product display
+- Added loading states and error handling for the product grid
+- Implemented pagination with a "Load More" button
+- Fixed build issues by clearing the Next.js cache
+
+### Key Architectural Changes
+- Created a more direct shopping experience by showing products on the home page
+- Maintained a link to the calendar view for users who want to use that feature
+- Used the existing Shopify hooks for data fetching to ensure consistency
+- Implemented a responsive design that works well on all device sizes
+
+### Next Steps
+- [x] Fix the empty product grid issue by moving API calls to server components
+- [ ] Create a dedicated cart page at "/cart" to handle the redirect from product pages
+- [ ] Continue implementing cart functionality with the Storefront API
+- [ ] Add unit tests for the Storefront API client
+- [ ] Implement sorting and filtering options for the product grid
+
 ## Review - June 7, 2025 (Part 2)
 
 ### Completed Tasks
@@ -149,11 +218,6 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - Simplified the codebase by removing unused Admin API integration
 - Reduced TypeScript errors by eliminating problematic admin hooks
 - Maintained the application structure to allow for easy restoration of admin features if needed in the future
-
-### Next Steps
-- Fix remaining TypeScript errors in product pages
-- Continue implementing cart functionality with the Storefront API
-- Add unit tests for the Storefront API client
 
 ## Review - June 7, 2025 (Part 1)
 

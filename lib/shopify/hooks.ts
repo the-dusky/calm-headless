@@ -78,17 +78,26 @@ export function useProducts(first: number = 10) {
   const fetchProducts = async (after?: string) => {
     try {
       setLoading(true);
-      const { body } = await shopifyFetch<{ data: ProductsResponse }>({
+      console.log('Fetching products with params:', { first, after });
+      
+      const { body, status } = await shopifyFetch<{ data: ProductsResponse }>({
         query: GET_PRODUCTS,
         variables: { first, after },
       });
+      
+      console.log('Shopify API response status:', status);
+      console.log('Shopify API response body:', body);
 
       if (body.data?.products) {
         const newProducts = body.data.products.edges.map((edge) => edge.node);
+        console.log('Parsed products:', newProducts.length, newProducts);
         setProducts(after ? [...products, ...newProducts] : newProducts);
         setPageInfo(body.data.products.pageInfo);
+      } else {
+        console.error('No products data in response:', body);
       }
     } catch (err) {
+      console.error('Error fetching products:', err);
       setError(err instanceof Error ? err : new Error('An error occurred'));
     } finally {
       setLoading(false);

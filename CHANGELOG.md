@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.3] - 2025-06-07
+
+### Fixes
+- Fixed product page error by converting it to use server-side data fetching
+- Created ProductDetail client component to handle product UI and cart interactions
+- Added API route for single product fetching at `/api/products/[handle]`
+- Added SEO metadata generation for product pages
+- Improved error handling for product not found scenarios
+
+## [0.2.2] - 2025-06-07
+
+### Fixes
+- Fixed empty product grid issue by moving Shopify API calls to server components
+- Created server-side data fetching functions for proper environment variable access
+- Implemented hybrid approach with server-side initial data load and client-side pagination
+- Added API route for client-side pagination at `/api/products`
+- Improved error handling with better logging and user feedback
+
+## [0.2.1] - 2025-06-07
+
+### Features
+- Added product grid to home page for direct product browsing
+- Implemented pagination with "Load More" functionality
+- Added loading states and error handling for product fetching
+- Created responsive layout for optimal viewing on all devices
+- Added link to calendar view for users who prefer the scheduled shipping interface
+
 ## [0.2.0] - 2025-06-07
 
 ### Improvements
