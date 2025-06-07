@@ -16,3 +16,6 @@ All notable changes to this project will be documented in this file.
 - Created products listing page with pagination support
 - Updated GraphQL queries to use proper template literals for code generation
 - Created comprehensive integration plan in todo.md
+- Implemented product detail page with variant selection
+- Added collection browsing functionality with collection listing and detail pages
+- Created product search functionality with query parameter support

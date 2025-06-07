@@ -325,6 +325,19 @@ export const REMOVE_FROM_CART = gql`
   }
 `;
 
+export const GET_PRODUCTS_BY_SEARCH = gql`
+  query GetProductsBySearch($query: String!, $first: Int!) {
+    products(query: $query, first: $first) {
+      edges {
+        node {
+          ...ProductFragment
+        }
+      }
+    }
+  }
+  ${PRODUCT_FRAGMENT}
+`;
+
 export const GET_CART = gql`
   query GetCart($cartId: ID!) {
     cart(id: $cartId) {

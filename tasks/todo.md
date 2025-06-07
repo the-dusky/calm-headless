@@ -30,10 +30,10 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [x] Set up GraphQL code generation for type safety
 
 ### 2. Product Management
-- [ ] Implement product listing components
-- [ ] Build product detail page with variants
-- [ ] Create collection/category views
-- [ ] Add product search functionality
+- [x] Implement product listing components
+- [x] Build product detail page with variants
+- [x] Create collection/category views
+- [x] Add product search functionality
 - [ ] Integrate with the existing calendar-based shipping UI
 
 ### 3. Cart Functionality
