@@ -34,41 +34,53 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [x] Build product detail page with variants
 - [x] Create collection/category views
 - [x] Add product search functionality
-- [ ] Integrate with the existing calendar-based shipping UI
 
-### 3. Cart Functionality
+### 3. Shopify Admin Integration
+- [x] Set up Admin API authentication
+- [x] Create product management interface
+- [ ] Implement inventory management
+- [ ] Add order management capabilities
+- [ ] Build store settings configuration
+
+### 4. Cart Functionality
 - [ ] Implement cart context/provider
 - [ ] Build cart sidebar/drawer component
 - [ ] Add product-to-cart functionality
 - [ ] Create cart line item management (update quantity, remove)
 - [ ] Implement cart totals and discounts
 
-### 4. Checkout Integration
+### 5. Product & Cart Integration with Calendar UI
+- [ ] Connect product selection to calendar-based shipping UI
+- [ ] Integrate cart functionality with shipping date selection
+- [ ] Implement shipping date validation and availability
+- [ ] Create unified checkout flow with calendar shipping options
+
+### 6. Checkout Integration
 - [ ] Connect to Shopify Checkout
 - [ ] Create checkout information forms
 - [ ] Implement shipping method selection
 - [ ] Add payment method integration
 - [ ] Build order confirmation page
 
-### 5. Account Management
+### 7. Account Management
 - [ ] Create customer authentication flow
 - [ ] Build account profile page
 - [ ] Implement order history view
 - [ ] Add address book management
 
-### 6. Design Migration
+### 8. Design Migration
 - [ ] Transfer color schemes from Shopify theme
 - [ ] Adapt typography styles
 - [ ] Migrate custom components and layouts
 - [ ] Ensure mobile responsiveness
 
-### 7. Testing & Optimization
+### 9. Testing & Optimization
 - [ ] Implement unit tests for key components
 - [ ] Add integration tests for critical user flows
 - [ ] Optimize performance (lazy loading, code splitting)
 - [ ] Implement SEO best practices
 
-### 8. Deployment
+### 10. Deployment
 - [ ] Configure build process for production
 - [ ] Set up CI/CD pipeline
 - [ ] Deploy to production environment

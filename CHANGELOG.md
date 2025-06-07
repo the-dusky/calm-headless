@@ -19,3 +19,6 @@ All notable changes to this project will be documented in this file.
 - Implemented product detail page with variant selection
 - Added collection browsing functionality with collection listing and detail pages
 - Created product search functionality with query parameter support
+- Implemented Shopify Admin API integration with authentication and client utilities
+- Created Admin dashboard with product management interface
+- Added GraphQL queries and mutations for Shopify Admin API
