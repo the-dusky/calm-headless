@@ -3,13 +3,17 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CartButton } from "@/components/cart"
+import { useAuth } from "@/components/auth/AuthProvider"
+import LoginButton from "@/components/auth/LoginButton"
+import LogoutButton from "@/components/auth/LogoutButton"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const { isAuthenticated, isLoading, customer } = useAuth()
 
   const navItems = [
     { href: "/", label: "Calendar" },
@@ -47,8 +51,22 @@ export function Navigation() {
             ))}
           </div>
 
-          {/* Cart */}
+          {/* Account & Cart */}
           <div className="flex items-center space-x-4">
+            {/* Account */}
+            {isLoading ? (
+              <div className="w-8 h-8 animate-pulse rounded-full bg-gray-200"></div>
+            ) : isAuthenticated ? (
+              <Link href="/account" className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-green-700">
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">{customer?.firstName || 'Account'}</span>
+              </Link>
+            ) : (
+              <LoginButton className="text-sm font-medium text-gray-600 hover:text-green-700">
+                Sign In
+              </LoginButton>
+            )}
+            
             <CartButton />
 
             {/* Mobile menu button */}
@@ -76,6 +94,24 @@ export function Navigation() {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* Account links for mobile */}
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="text-sm font-medium px-4 py-2 rounded-lg transition-colors text-gray-600 hover:text-orange-600 hover:bg-gray-50"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    My Account
+                  </Link>
+                  <LogoutButton className="text-sm font-medium px-4 py-2 rounded-lg transition-colors text-gray-600 hover:text-orange-600 hover:bg-gray-50 text-left" />
+                </>
+              ) : (
+                <LoginButton className="text-sm font-medium px-4 py-2 rounded-lg transition-colors text-gray-600 hover:text-orange-600 hover:bg-gray-50 text-left">
+                  Sign In
+                </LoginButton>
+              )}
             </div>
           </div>
         )}

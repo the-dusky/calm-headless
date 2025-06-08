@@ -4,6 +4,43 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.5] - 2025-06-07
+
+### Features
+- Implemented Shopify Customer Account API with OAuth2 authentication
+- Created secure token storage using HTTP-only cookies
+- Added login/logout functionality with Shopify-hosted login page
+- Implemented authentication context provider for global auth state management
+- Added protected account page with customer profile information
+- Integrated authentication UI components in site navigation
+
+### Improvements
+- Created comprehensive GraphQL client for Customer Account API
+- Implemented token refresh mechanism for maintaining sessions
+- Added proper error handling for authentication flows
+- Created server actions and API routes for auth operations
+
+### Fixes
+- Fixed TypeScript errors in auth implementation
+- Fixed build errors by properly handling async cookies
+- Added suspense boundary for client components using useSearchParams
+- Made account page route dynamic to support server-side authentication
+
+## [0.2.4] - 2025-06-07
+
+### Fixes
+- Fixed security issues by moving all Shopify API calls requiring private tokens to server-side
+- Created server actions for cart operations in `lib/shopify/server-actions.ts`
+- Created API routes for cart operations at `/api/cart/create` and `/api/cart/[id]`
+- Refactored cart context to use server-side API routes instead of direct Shopify API calls
+- Fixed TypeScript errors in server-actions.ts and types.ts
+
+### Features
+- Added dedicated cart page at `/cart` with full cart management functionality
+- Added formatPrice utility function for consistent price formatting
+- Implemented cart item quantity controls and removal functionality
+- Added checkout button that redirects to Shopify checkout
+
 ## [0.2.3] - 2025-06-07
 
 ### Fixes

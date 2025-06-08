@@ -48,6 +48,9 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [x] Add product-to-cart functionality
 - [x] Create cart line item management (update quantity, remove)
 - [x] Implement cart totals and discounts
+- [x] Refactor cart context to use server-side API routes instead of direct Shopify API calls
+- [x] Create API routes for cart operations (create, add, update, remove, get)
+- [ ] Create dedicated cart page
 
 ### 5. API Debugging & Authentication Fixes
 - [x] Fix GraphQL playground authentication issues
@@ -113,10 +116,85 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [ ] Build order confirmation page
 
 ### 7. Account Management
-- [ ] Create customer authentication flow
-- [ ] Build account profile page
+
+#### 7.1 Customer Authentication
+- [x] Research Shopify Customer Authentication options
+  - [x] Evaluate Shopify Customer Accounts API
+  - [x] Evaluate Shopify Multipass for SSO
+  - [x] Determine best approach for our Next.js application
+- [x] Create detailed Customer Account API implementation plan
+  - [x] Document OAuth2 authentication flow
+  - [x] Outline required components and security considerations
+  - [x] Define implementation tasks and phases
+- [x] Set up OAuth2 configuration
+  - [x] Configure environment variables for Customer Account API
+  - [x] Create authentication utility functions in `lib/shopify/customer-account-api/auth.ts`
+- [x] Implement OAuth2 authentication flow
+  - [x] Create authorization URL generation function
+  - [x] Implement token exchange functionality
+  - [x] Add token refresh mechanism
+  - [x] Create token revocation for logout
+- [x] Create Customer Account API client
+  - [x] Implement GraphQL client for Customer Account API
+  - [x] Add queries and mutations for customer data operations
+  - [x] Create server actions for customer operations
+- [x] Build authentication UI components
+  - [x] Create login initiation button/link
+  - [x] Implement OAuth callback handling
+  - [x] Add logout functionality
+  - [x] Integrate auth components into navigation
+- [x] Implement authentication state management
+  - [x] Create customer context provider
+  - [x] Add loading and error states
+  - [x] Implement auth state persistence with HTTP-only cookies
+- [ ] Test and debug authentication flow
+  - [ ] Test login flow with Shopify
+  - [ ] Test token refresh mechanism
+  - [ ] Test logout functionality
+
+#### 7.2 Customer Account Pages
+- [ ] Create account dashboard page
+  - [ ] Design account overview UI
+  - [ ] Display customer information summary
+  - [ ] Add quick links to other account sections
+- [ ] Build profile management page
+  - [ ] Create profile edit form
+  - [ ] Implement profile update functionality
+  - [ ] Add profile picture upload (if applicable)
 - [ ] Implement order history view
+  - [ ] Create order list component
+  - [ ] Build order detail page
+  - [ ] Add order filtering and sorting
+  - [ ] Implement order status tracking
 - [ ] Add address book management
+  - [ ] Create address list component
+  - [ ] Build address add/edit forms
+  - [ ] Implement address deletion
+  - [ ] Add default address selection
+
+#### 7.3 Security & Privacy
+- [ ] Implement secure token storage
+- [ ] Add CSRF protection
+- [ ] Create account recovery options
+- [ ] Add two-factor authentication (if applicable)
+- [ ] Implement privacy preferences management
+
+## Review - June 7, 2025 (Part 7)
+
+### Completed Tasks
+- Researched Shopify Customer Authentication options
+- Created detailed account management implementation plan
+- Added customer-related types to types.ts
+- Created GraphQL queries and mutations for customer authentication and account management
+- Implemented server actions for customer authentication and account management
+- Started creating API routes for client-side authentication
+
+### Next Steps
+- Complete API routes for customer authentication and account management
+- Create customer authentication context provider
+- Build UI components for login, registration, and account management
+- Create account pages
+- Test the authentication flow end-to-end
 
 ### 8. Design Migration
 - [ ] Transfer color schemes from Shopify theme
@@ -136,6 +214,23 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - [ ] Deploy to production environment
 - [ ] Monitor performance and errors
 
+## Review - June 7, 2025 (Part 6)
+
+### Completed Tasks
+- Fixed security issues by moving all Shopify API calls requiring private tokens to server-side
+- Created server actions for cart operations in `lib/shopify/server-actions.ts`
+- Created API routes for cart operations at `/api/cart/create` and `/api/cart/[id]`
+- Refactored cart context to use server-side API routes instead of direct Shopify API calls
+- Fixed TypeScript errors in server-actions.ts and types.ts
+- Updated todo.md with current progress and next steps
+
+### Key Architectural Changes
+- Eliminated all client-side access to private Shopify tokens
+- Created a secure server-side API layer for all cart operations
+- Implemented proper error handling for cart operations
+- Maintained the same cart functionality while fixing the security issues
+- Improved type safety with better TypeScript definitions
+
 ## Review - June 7, 2025 (Part 5)
 
 ### Completed Tasks
@@ -153,10 +248,15 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - Maintained the same UI/UX while fixing the core data fetching issue
 
 ### Next Steps
-- [ ] Create a dedicated cart page at "/cart" to handle the redirect from product pages
-- [ ] Continue implementing cart functionality with the Storefront API
-- [ ] Test the product page and cart functionality end-to-end
-- [ ] Add unit tests for the server-side data fetching functions
+
+1. ✅ Fix Shopify Storefront API integration by moving private token access to server-side
+2. ✅ Refactor product page to use server-side data fetching
+3. ✅ Create server actions for cart operations
+4. ✅ Create API routes for cart operations
+5. ✅ Refactor cart context to use server-side API routes
+6. 🔄 Create dedicated cart page
+7. 🔄 Test the end-to-end user flow
+8. Deploy the integrated solution
 
 ## Review - June 7, 2025 (Part 4)
 
@@ -271,3 +371,55 @@ Connect the Next.js app to Shopify's headless API to replace the traditional Sho
 - Created a flexible architecture that can be extended as needed
 - Maintained compatibility with the existing Next.js app structure
 - Resolved dependency conflicts with date-fns using --legacy-peer-deps
+
+## Review - June 7, 2025 (Part 6)
+
+### Completed Tasks - Customer Account API Implementation
+- Implemented Shopify Customer Account API with OAuth2 authentication
+- Created secure token storage using HTTP-only cookies
+- Implemented authentication context provider for global auth state management
+- Added login/logout functionality with Shopify-hosted login page
+- Created protected account page with customer profile information
+- Integrated authentication UI components in site navigation
+- Fixed TypeScript errors and build issues
+
+### Key Architectural Components
+- Authentication utilities (`lib/shopify/customer-account-api/auth.ts`)
+  - OAuth2 flow functions (authorization URL generation, token exchange, refresh, revocation)
+  - Secure token storage using HTTP-only cookies
+  - Helper functions for authentication state management
+- Customer API client (`lib/shopify/customer-account-api/client.ts`)
+  - GraphQL client for making authenticated requests
+  - Error handling and response processing
+- GraphQL queries and mutations (`lib/shopify/customer-account-api/queries.ts`)
+  - Customer profile operations
+  - Order history retrieval
+  - Address management
+- Server actions (`lib/shopify/customer-account-api/actions.ts`)
+  - OAuth flow implementation
+  - Customer data operations
+- API routes
+  - `/api/auth/login` - Initiates the login flow
+  - `/authorize` - Handles OAuth callback
+  - `/api/auth/logout` - Handles logout
+  - `/api/auth/customer` - Fetches customer data
+- React components
+  - `AuthProvider` - Context provider for authentication state
+  - `LoginButton` - Component for initiating login
+  - `LogoutButton` - Component for handling logout
+
+### Next Steps
+1. Test the OAuth flow with Shopify
+   - Configure callback URIs in Shopify admin
+   - Test login, token refresh, and logout flows
+   - Verify error handling
+
+2. Complete the account management pages
+   - Implement order history page
+   - Create address book management
+   - Add profile editing functionality
+
+3. Integrate with cart and checkout
+   - Connect authenticated customer to cart
+   - Enable saved addresses in checkout
+   - Support order history tracking

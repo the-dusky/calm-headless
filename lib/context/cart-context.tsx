@@ -1,15 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { shopifyFetch } from '@/lib/shopify/client';
-import { 
-  CREATE_CART, 
-  ADD_TO_CART, 
-  UPDATE_CART, 
-  REMOVE_FROM_CART,
-  GET_CART
-} from '@/lib/shopify/queries';
-import { DocumentNode } from 'graphql';
 
 // Types
 export interface CartLine {
@@ -101,22 +92,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const fetchCart = async (cartId: string) => {
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: GET_CART.loc?.source.body || '',
-        variables: { cartId }
-      });
-
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error fetching cart:', errors);
+      const response = await fetch(`/api/cart/${cartId}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error fetching cart:', data.error);
+        // Cart not found or expired, clear local storage
+        localStorage.removeItem('cartId');
+        setCart(null);
         return;
       }
-
-      if (data?.data?.cart) {
-        setCart(data.data.cart);
+      
+      if (data?.cart) {
+        setCart(data.cart);
       } else {
         // Cart not found or expired, clear local storage
         localStorage.removeItem('cartId');
@@ -124,6 +112,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
     } catch (error) {
       console.error('Error fetching cart:', error);
+      // Cart not found or expired, clear local storage
+      localStorage.removeItem('cartId');
+      setCart(null);
     } finally {
       setIsLoading(false);
     }
@@ -133,31 +124,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const createCart = async (variantId: string, quantity: number) => {
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: CREATE_CART.loc?.source.body || '',
-        variables: {
+      const response = await fetch('/api/cart/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           lines: [
             {
               merchandiseId: variantId,
               quantity
             }
           ]
-        }
+        })
       });
-
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error creating cart:', errors);
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error creating cart:', data.error);
         return;
       }
-
-      const newCart = data?.data?.cartCreate?.cart;
+      
+      const newCart = data.cart;
       if (newCart) {
         localStorage.setItem('cartId', newCart.id);
         setCart(newCart);
+        setIsCartOpen(true);
       }
     } catch (error) {
       console.error('Error creating cart:', error);
@@ -166,40 +159,45 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Add item to cart
+  // Add to cart
   const addToCart = async (variantId: string, quantity: number) => {
-    if (!cart) {
-      await createCart(variantId, quantity);
-      return;
-    }
-
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: ADD_TO_CART.loc?.source.body || '',
-        variables: {
-          cartId: cart.id,
+      let cartId = localStorage.getItem('cartId');
+
+      // If no cart exists, create one
+      if (!cartId) {
+        await createCart(variantId, quantity);
+        return;
+      }
+
+      // Add to existing cart
+      const response = await fetch(`/api/cart/${cartId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           lines: [
             {
               merchandiseId: variantId,
               quantity
             }
           ]
-        }
+        })
       });
-
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error adding to cart:', errors);
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error adding to cart:', data.error);
         return;
       }
-
-      const updatedCart = data?.data?.cartLinesAdd?.cart;
+      
+      const updatedCart = data.cart;
       if (updatedCart) {
         setCart(updatedCart);
+        setIsCartOpen(true);
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -208,35 +206,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Update cart item quantity
+  // Update cart
   const updateCartItem = async (lineId: string, quantity: number) => {
-    if (!cart) return;
-
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: UPDATE_CART.loc?.source.body || '',
-        variables: {
-          cartId: cart.id,
+      const cartId = localStorage.getItem('cartId');
+
+      if (!cartId) {
+        console.error('No cart ID found');
+        return;
+      }
+
+      const response = await fetch(`/api/cart/${cartId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           lines: [
             {
               id: lineId,
               quantity
             }
           ]
-        }
+        })
       });
-
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error updating cart:', errors);
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error updating cart:', data.error);
         return;
       }
-
-      const updatedCart = data?.data?.cartLinesUpdate?.cart;
+      
+      const updatedCart = data.cart;
       if (updatedCart) {
         setCart(updatedCart);
       }
@@ -247,30 +250,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Remove item from cart
+  // Remove from cart
   const removeFromCart = async (lineId: string) => {
-    if (!cart) return;
-
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: REMOVE_FROM_CART.loc?.source.body || '',
-        variables: {
-          cartId: cart.id,
-          lineIds: [lineId]
-        }
-      });
+      const cartId = localStorage.getItem('cartId');
 
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error removing from cart:', errors);
+      if (!cartId) {
+        console.error('No cart ID found');
         return;
       }
 
-      const updatedCart = data?.data?.cartLinesRemove?.cart;
+      const response = await fetch(`/api/cart/${cartId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lineIds: [lineId]
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Error removing from cart:', data.error);
+        return;
+      }
+      
+      const updatedCart = data.cart;
       if (updatedCart) {
         setCart(updatedCart);
       }
@@ -286,27 +294,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!cart) return;
 
     const lineIds = cart.lines.edges.map(({ node }) => node.id);
+    const cartId = localStorage.getItem('cartId');
+    
+    if (!cartId) {
+      console.error('No cart ID found');
+      return;
+    }
     
     try {
       setIsLoading(true);
-      const response = await shopifyFetch({
-        query: REMOVE_FROM_CART.loc?.source.body || '',
-        variables: {
-          cartId: cart.id,
+      const response = await fetch(`/api/cart/${cartId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           lineIds
-        }
+        })
       });
+      
+      const data = await response.json();
 
-      const { body } = response;
-      const data = body as any;
-      const errors = data.errors;
-
-      if (errors) {
-        console.error('Error clearing cart:', errors);
+      if (!response.ok) {
+        console.error('Error clearing cart:', data.error);
         return;
       }
 
-      const updatedCart = data?.data?.cartLinesRemove?.cart;
+      const updatedCart = data.cart;
       if (updatedCart) {
         setCart(updatedCart);
       }
